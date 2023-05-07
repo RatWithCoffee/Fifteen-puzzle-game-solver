@@ -93,7 +93,8 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => FindSolution(resBoard)));
+                    builder: (context) =>
+                        FindSolution.getSolutionPage(resBoard)));
           }
         },
         label: const Text('Решить'),

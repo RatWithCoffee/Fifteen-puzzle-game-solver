@@ -7,7 +7,7 @@ class InfoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Важная информация'),
+      title: const Text('Важная информация', ),
       content: const Text(
           'Для решения головоломки нужно, оставив одну клетку пустой, ввести в остальные'
           ' целые числа от 1 до 8 '

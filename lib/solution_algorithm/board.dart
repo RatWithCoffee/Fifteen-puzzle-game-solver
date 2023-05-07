@@ -1,30 +1,27 @@
 // класс для представления игровой доски головоломки
 class Board {
   // представление игровой доски в виде массива n*n строк с плиткам
-  late final List<List<int>> _board;
+  final List<List<int>> board;
 
-  late final int _manhattan;
+  int manhattan = -1;
 
   // манхэттенское расстояние между данной доской и целевой доской
   // вычисляется как сумма расстояний от каждой плитки до ее целевой позиции
 
   // в конструктор передается уже валидный массив
-  Board(List<List<int>> tiles) {
-    _board = List.from(tiles);
-    _manhattan = _countManhattan();
-  }
+  Board(List<List<int>> tiles) : board = List.from(tiles);
 
   // для подсчета манхэттенского расстояния
   int _countManhattan() {
     int manhattan = 0;
     int goalRow, goalCol;
-    for (int i = 0; i < _board.length; i++) {
-      for (int j = 0; j < _board.length; j++) {
-        if (_board[i][j] == 0) {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {
+        if (board[i][j] == 0) {
           continue;
         }
-        goalCol = (_board[i][j] - 1) % _board.length;
-        goalRow = (_board[i][j] - 1) ~/ _board.length;
+        goalCol = (board[i][j] - 1) % board.length;
+        goalRow = (board[i][j] - 1) ~/ board.length;
         manhattan += (j - goalCol).abs() + (i - goalRow).abs();
       }
     }
@@ -35,9 +32,9 @@ class Board {
   @override
   String toString() {
     StringBuffer strBoard = StringBuffer();
-    strBoard.write(_board.length);
+    strBoard.write(board.length);
     strBoard.write('\n');
-    for (List<int> row in _board) {
+    for (List<int> row in board) {
       strBoard.writeAll(row, ' ');
       strBoard.write('\n');
     }
@@ -45,21 +42,23 @@ class Board {
   }
 
   // размерность игровой доски
-  int dimension() {
-    return _board.length;
+  int getDimension() {
+    return board.length;
   }
 
-  int manhattan() {
-    return _manhattan;
+  int getManhattan() {
+    // если манхэттенское расстояние еще не было подсчитано
+    if (manhattan == -1) manhattan = _countManhattan();
+    return manhattan;
   }
 
   // текущая доска является целевой?
   bool isGoal() {
-    return _manhattan == 0;
+    return manhattan == 0;
   }
 
   List<List<int>> getBoard() {
-    return List.from(_board);
+    return List.from(board);
   }
 
   // две игровые доски равны, если их размерности равны
@@ -74,13 +73,13 @@ class Board {
   // проверка полей обьектов на равенство
   bool _checkValues(Board other) {
     // проверка равенства размерности игровых досок
-    if (other._board.length != _board.length) {
+    if (other.board.length != board.length) {
       return false;
     }
     // проверка соответствующих плиток
-    for (int i = 0; i < _board.length; i++) {
-      for (int j = 0; j < _board[i].length; j++) {
-        if (_board[i][j] != other._board[i][j]) return false;
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[i].length; j++) {
+        if (board[i][j] != other.board[i][j]) return false;
       }
     }
 
@@ -88,18 +87,18 @@ class Board {
   }
 
   @override
-  int get hashCode => Object.hash(_board, _manhattan);
+  int get hashCode => Object.hash(board, manhattan);
 
   // возвращает список результатов всех возможных ходов из текущего состояния
-  List<Board> neighbors() {
+  List<Board> getNeighbors() {
     List<Board> neighbors = [];
 
     // находим пустую клетку
     int emptyTileRow = 0, emptyTileCol = 0;
     cycle:
-    for (int i = 0; i < _board.length; i++) {
-      for (int j = 0; j < _board.length; j++) {
-        if (_board[i][j] == 0) {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board.length; j++) {
+        if (board[i][j] == 0) {
           emptyTileRow = i;
           emptyTileCol = j;
           break cycle;
@@ -132,13 +131,13 @@ class Board {
   }
 
   bool _isIndexValid(int i) {
-    return i >= 0 && i < _board.length;
+    return i >= 0 && i < board.length;
   }
 
   // возвращает доску, полученную перестановкой пустой и соседней непустой плитки
   Board _createNeighbourBoard(int row1, int col1, int row2, int col2) {
     List<List<int>> neighbourBoard =
-        List.generate(_board.length, (i) => List.from(_board[i]));
+        List.generate(board.length, (i) => List.from(board[i]));
 
     // меняем плитки
     int temp = neighbourBoard[row1][col1];
@@ -151,7 +150,7 @@ class Board {
   // это потом используется для проверки наличия у головоломки решения в классе Solver
   Board twin() {
     int row;
-    if (_board[0][0] != 0 && _board[0][1] != 0) {
+    if (board[0][0] != 0 && board[0][1] != 0) {
       row = 0;
     } else {
       row = 1;

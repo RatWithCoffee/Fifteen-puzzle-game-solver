@@ -2,29 +2,44 @@ import 'package:flutter/material.dart';
 
 // класс для отображения плиток игровой доски
 class BoardImage extends StatelessWidget {
-  late final List<List<Tile>> tiles; // массив плиток
+  final List<List<int>> board;
+  final int move;
 
-  BoardImage(List<List<int>> board, {super.key}) {
-    tiles = [];
-    for (List<int> row in board) {
-      tiles.add(row.map((e) => Tile(e)).toList());
-    }
-  }
+  const BoardImage(this.board, this.move, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    List<List<Tile>> tiles = []; // массив плиток
+    for (List<int> row in board) {
+      tiles.add(row.map((e) => Tile(e)).toList());
+    }
+
     return Container(
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(5),
+        margin: const EdgeInsets.only(bottom: 5, right: 20, top: 10, left: 20),
+        padding:
+            const EdgeInsets.only(bottom: 10, right: 15, top: 10, left: 10),
         decoration: const BoxDecoration(
             color: Colors.black38,
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Column(
-          children: tiles
-              .map((row) => Row(
-                    children: row,
-                  ))
-              .toList(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: tiles
+                    .map((row) => Row(
+                          children: row,
+                        ))
+                    .toList(),
+              ),
+            ),
+            Expanded(
+                flex: 1,
+                child:
+                    Container(alignment: Alignment.topRight, child: Tile(move)))
+          ],
         ));
   }
 }
