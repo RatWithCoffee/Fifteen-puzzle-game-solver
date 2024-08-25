@@ -25,7 +25,6 @@ class PuzzleApp extends StatelessWidget {
             onBackground: Colors.black,
             error: Colors.teal,
             onError: Colors.black,
-
           ),
         ),
         home: const HomePage());
